@@ -15,7 +15,16 @@
         .header-banner-image { width: 100%; height: auto; display: block; }
         
         /* --- ヒーローバナー（ヘッダー下） --- */
-        .hero-banners { width: 100%; max-width: 1200px; margin: 2rem auto; padding: 0 1rem; display: flex; flex-direction: column; gap: 2rem; }
+        /* ★修正点1：PC表示で70%幅に */
+        .hero-banners {
+            width: 70%;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
         .banner-container { width: 100%; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); transition: transform 0.3s ease; }
         .banner-container:hover { transform: translateY(-5px); }
         .banner-image { width: 100%; height: auto; display: block; }
@@ -27,8 +36,15 @@
         .category-button { background: #f5f5f5; color: #333; padding: 1rem; border-radius: 8px; text-align: center; text-decoration: none; transition: all 0.3s ease; border: 1px solid #ddd; font-weight: bold; text-transform: none; font-size: 0.9rem; }
         .category-button:hover, .category-button.active { border-color: #8C2B29; background: #8C2B29; color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(140, 43, 41, 0.2); }
         
+        /* ★修正点2：おすすめセクションの特別感を演出 */
+        #featured-section {
+            background-color: #f9f9f9; /* 背景色を薄いグレーに */
+            padding: 4rem 0;
+            margin-top: 4rem;
+        }
+
         /* --- セクションタイトル --- */
-        .section-title { font-family: "游明朝", YuMincho, "Hiragino Mincho ProN", "MS PMincho", serif; text-align: center; font-size: 2.2rem; margin: 4rem 0 2rem; color: #333; background: none; -webkit-background-clip: unset; -webkit-text-fill-color: unset; position: relative; padding-bottom: 1rem; }
+        .section-title { font-family: "游明朝", YuMincho, "Hiragino Mincho ProN", "MS PMincho", serif; text-align: center; font-size: 2.2rem; margin: 0 0 2rem; /* 上マージンを削除 */ color: #333; background: none; -webkit-background-clip: unset; -webkit-text-fill-color: unset; position: relative; padding-bottom: 1rem; }
         .section-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 2px; background: #8C2B29; }
         .display-type-selector { display: flex; justify-content: center; gap: 1rem; margin: 2rem 0; }
         .display-type-button { padding: 0.5rem 1.5rem; border: 2px solid #8C2B29; border-radius: 20px; background: transparent; color: #8C2B29; cursor: pointer; transition: all 0.3s ease; }
@@ -37,7 +53,14 @@
         /* --- 商品カード & グリッド --- */
         .featured-products { max-width: 50%; margin: 0 auto; }
         .featured-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-        .featured-product-card { display: flex; flex-direction: column; align-items: center; gap: 1rem; background: #fff; padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid #eee; }
+        .featured-product-card {
+            display: flex; flex-direction: column; align-items: center; gap: 1rem;
+            background: #fff;
+            padding: 1rem; border-radius: 8px; text-align: center;
+            border: 1px solid #eee;
+            border-top: 4px solid #8C2B29; /* ★カード上部にアクセントラインを追加 */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
         .featured-rank { font-size: 2rem; font-weight: bold; color: #8C2B29; min-width: 60px; text-align: center; }
         .featured-image { width: 100%; height: auto; object-fit: cover; border-radius: 8px; }
         .featured-info { flex-grow: 1; }
@@ -61,17 +84,8 @@
         .cta-button { display: block; width: 100%; padding: 0.8rem; background: #8C2B29; color: white; text-align: center; text-decoration: none; border-radius: 8px; transition: all 0.3s ease; font-weight: bold; text-transform: none; letter-spacing: 1px; margin-top: auto; }
         .cta-button:hover { background: #6a201e; }
 
-        /* --- 商品ラベル（バッジ）機能（新デザイン） --- */
-        .product-badge {
-            display: inline-block; /* インラインブロック要素として配置 */
-            padding: 0.3rem 0.8rem;
-            margin: 0.8rem 0; /* 上下の余白 */
-            color: #fff;
-            font-weight: bold;
-            font-size: 0.9rem;
-            border-radius: 20px; /* 角を丸くする */
-            line-height: 1.4;
-        }
+        /* --- 商品ラベル（バッジ）機能 --- */
+        .product-badge { display: inline-block; padding: 0.3rem 0.8rem; margin: 0.8rem 0; color: #fff; font-weight: bold; font-size: 0.9rem; border-radius: 20px; line-height: 1.4; }
         .product-badge.red { background: #B73E3E; }
         .product-badge.gold { background: #e5b323; }
         .product-badge.blue { background: #507ea2; }
@@ -96,6 +110,11 @@
         
         @media (max-width: 768px) {
             .header-banner-container { width: 100%; margin: 0; }
+            /* ★修正点1：スマホでは100%幅に */
+            .hero-banners {
+                width: 100%;
+                padding: 0 1rem;
+            }
             .featured-products { max-width: 100%; }
             .products-container { grid-template-columns: repeat(2, 1fr); }
             .products-container.list-view { grid-template-columns: 1fr; }
@@ -112,7 +131,9 @@
         <!-- ヘッダーバナーがここに挿入されます -->
     </header>
 
-    <div class="hero-banners" id="banner-container"></div>
+    <div class="hero-banners" id="banner-container">
+        <!-- ヒーローバナーがここに挿入されます -->
+    </div>
     <nav id="category-nav" class="category-nav"><div id="category-buttons" class="category-buttons"></div></nav>
     <section id="featured-section"><h2 class="section-title">おすすめ商品</h2>
         <div class="display-type-selector"><button class="display-type-button active" data-type="featured">目玉商品</button><button class="display-type-button" data-type="ranking">ランキング</button></div>
@@ -128,6 +149,7 @@
     </footer>
     
     <script>
+        // JavaScript部分は前回から変更ありません
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3SY5bYoDqBIVV-KklmAxDCYTvxQaYJpK4s12cWT7YqTJOXT5WQMFgM9NLvmQee8xiCw/exec';
 
         const parsePrice = (price) => {
