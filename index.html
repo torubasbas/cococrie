@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">セール特集</title>
     <style>
-        /* CSSは変更ありません */
+        /* CSSから売り切れ関連のスタイルを削除済み */
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #000; color: #fff; line-height: 1.6; }
         .header { background: linear-gradient(135deg, #ff69b4, #800080); padding: 2rem 1rem; text-align: center; box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3); }
@@ -55,11 +55,6 @@
         .product-badge.red { background: #e74c3c; } .product-badge.red::before { border-top-color: #c0392b; }
         .product-badge.gold { background: #f1c40f; color:#333; } .product-badge.gold::before { border-top-color: #c8a209; }
         .product-badge.blue { background: #3498db; } .product-badge.blue::before { border-top-color: #2980b9; }
-        .sold-out-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); color: white; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; z-index: 3; pointer-events: none; opacity: 0; transition: opacity 0.3s; }
-        .product-card.sold-out .sold-out-overlay { opacity: 1; }
-        .product-card.sold-out .cta-button { background: #555; pointer-events: none; cursor: not-allowed; }
-        .product-card.sold-out .cta-button::after { content: "売り切れ"; }
-        .product-card.sold-out .cta-button span { display: none; }
         .products-container.list-view { grid-template-columns: 1fr; }
         .products-container.list-view .product-card { flex-direction: row; align-items: center; }
         .products-container.list-view .product-image-wrapper { flex-shrink: 0; width: 200px; height: 200px; }
@@ -108,9 +103,8 @@
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyALLp42uk0BaD9_bur3zdsI-Gj9aoQaUst_E2p1ePJ1-lKB6v8u7oJJi8tbJIV1iBD/exec';
 
-        // カンマ付き文字列を数値に変換するヘルパー関数
         const parsePrice = (price) => {
-            if (typeof price !== 'string' && typeof price !== 'number') return 0;
+            if (!price) return 0;
             return parseInt(String(price).replace(/,/g, ''), 10);
         };
 
@@ -137,20 +131,19 @@
             generateProductCard(product, viewType = 'grid') {
                 const salePrice = parsePrice(product.salePrice);
                 const originalPrice = parsePrice(product.originalPrice);
-                const originalPriceHtml = originalPrice > salePrice ? `<span class="original-price">¥${originalPrice.toLocaleString()}</span>` : '';
+                const originalPriceHtml = originalPrice > 0 && originalPrice > salePrice ? `<span class="original-price">¥${originalPrice.toLocaleString()}</span>` : '';
+                const displayPrice = salePrice > 0 ? salePrice : originalPrice;
                 const badgeHtml = product.labelText ? `<div class="product-badge ${product.labelColor || 'red'}">${product.labelText}</div>` : '';
-                const soldOutClass = product.isSoldOut ? 'sold-out' : '';
                 
                 return `
-                    <div class="product-card ${soldOutClass} ${viewType === 'list' ? 'list-view' : ''} fade-in">
+                    <div class="product-card ${viewType === 'list' ? 'list-view' : ''} fade-in">
                         <div class="product-image-wrapper">
                             ${badgeHtml}
-                            <div class="sold-out-overlay">SOLD OUT</div>
                             <img src="${product.imageUrl}" alt="${product.name}" class="product-image" loading="lazy">
                         </div>
                         <div class="product-info">
                             <h3 class="product-name">${product.name}</h3>
-                            <p class="product-price">${originalPriceHtml}¥${salePrice.toLocaleString()}</p>
+                            <p class="product-price">${originalPriceHtml}¥${displayPrice.toLocaleString()}</p>
                             ${product.notice ? `<div class="product-notice">${product.notice}</div>` : ''}
                             <a href="${product.url}" class="cta-button" target="_blank"><span>商品を見る</span></a>
                         </div>
@@ -159,14 +152,15 @@
             generateFeaturedCard(product, rank = null) {
                 const salePrice = parsePrice(product.salePrice);
                 const originalPrice = parsePrice(product.originalPrice);
-                const originalPriceHtml = originalPrice > salePrice ? `<span class="original-price">¥${originalPrice.toLocaleString()}</span>` : '';
+                const originalPriceHtml = originalPrice > 0 && originalPrice > salePrice ? `<span class="original-price">¥${originalPrice.toLocaleString()}</span>` : '';
+                const displayPrice = salePrice > 0 ? salePrice : originalPrice;
                 return `
                     <div class="featured-product-card fade-in">
                         ${rank ? `<div class="featured-rank">${rank}</div>` : ''}
                         <img src="${product.imageUrl}" alt="${product.name}" class="featured-image" loading="lazy">
                         <div class="featured-info">
                             <h3 class="product-name">${product.name}</h3>
-                            <p class="product-price">${originalPriceHtml}¥${salePrice.toLocaleString()}</p>
+                            <p class="product-price">${originalPriceHtml}¥${displayPrice.toLocaleString()}</p>
                             ${product.notice ? `<div class="product-notice">${product.notice}</div>` : ''}
                         </div>
                         <a href="${product.url}" class="cta-button" target="_blank">商品を見る</a>
@@ -209,7 +203,7 @@
                 this.updateBanners();
                 this.updateCategories();
                 this.updateFeaturedProducts();
-                this.updateCategoryProducts();
+                this.shopData.categories.forEach(id => this.updateCategoryProducts(id)); // 修正点4：初回描画
                 this.updateFooter();
                 this.initEventListeners();
             }
@@ -238,13 +232,13 @@
                 const container = document.getElementById('featured-container');
                 let products;
                 if (this.currentDisplayType === 'featured') {
-                    products = this.shopData.products.filter(p => p.isFeatured);
+                    products = this.shopData.products.filter(p => p.isFeatured === true); // 修正点3
                 } else {
-                    products = this.shopData.products.filter(p => p.ranking > 0).sort((a, b) => p.ranking - b.ranking);
+                    products = this.shopData.products.filter(p => parsePrice(p.ranking) > 0).sort((a, b) => parsePrice(a.ranking) - parsePrice(b.ranking)); // 修正点3
                 }
                 container.innerHTML = products.map(p => UIHelpers.generateFeaturedCard(p, p.ranking > 0 ? p.ranking : null)).join('');
             }
-            updateCategoryProducts(categoryId, viewType) {
+            updateCategoryProducts(categoryId, viewType = 'grid') {
                 const section = document.querySelector(`#${categoryId}`);
                 if (!section) return;
                 const container = section.querySelector('.products-container');
@@ -283,10 +277,7 @@
                         this.initScrollAnimations();
                     });
                 });
-                setTimeout(() => {
-                    this.initScrollAnimations();
-                    this.initScrollSpy();
-                }, 100);
+                setTimeout(() => { this.initScrollAnimations(); this.initScrollSpy(); }, 100);
             }
             initScrollAnimations() {
                 const observer = new IntersectionObserver((entries) => {
