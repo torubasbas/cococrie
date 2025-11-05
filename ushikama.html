@@ -58,21 +58,29 @@
         .product-card:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); }
         .product-image-wrapper { position: relative; }
         .product-image { width: 100%; aspect-ratio: 1; object-fit: cover; }
-        .product-info { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
-        .product-name { font-size: 1.1rem; margin-bottom: 0.8rem; color: #333; font-weight: bold; flex-grow: 1; }
-        .product-price { font-size: 1.7rem; color: #B73E3E; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; /* ★中央揃えを追加 */ gap: 0.5em; font-weight: bold; }
+        
+        /* ★修正：Flexboxを使ってレイアウトを制御 */
+        .product-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .product-name { font-size: 1.1rem; margin-bottom: 0.8rem; color: #333; font-weight: bold; }
+        .product-price { font-size: 1.7rem; color: #B73E3E; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5em; font-weight: bold; }
         .original-price { text-decoration: line-through; color: #999; font-size: 1.2rem; }
         .product-notice { background: #f5f5f5; padding: 0.5rem; border-radius: 4px; font-size: 0.9rem; margin: 0.5rem 0; color: #555; }
-        .cta-button { display: block; width: 100%; padding: 0.8rem; background: #8C2B29; color: white; text-align: center; text-decoration: none; border-radius: 8px; transition: all 0.3s ease; font-weight: bold; text-transform: none; letter-spacing: 1px; margin-top: auto; }
-        .cta-button:hover { background: #6a201e; }
+        .cta-button { display: block; width: 100%; padding: 0.8rem; background: #8C2B29; color: white; text-align: center; text-decoration: none; border-radius: 8px; transition: all 0.3s ease; font-weight: bold; text-transform: none; letter-spacing: 1px; }
+        .cta-button-wrapper {
+            margin-top: auto; /* ★これがボタンを最下部に配置する魔法のコード */
+            padding-top: 1rem; /* 上の要素との間に余白を確保 */
+        }
+
         .product-badge { display: inline-block; padding: 0.3rem 0.8rem; color: #fff; font-weight: bold; font-size: 0.9rem; border-radius: 20px; line-height: 1.4; text-align: center; }
-        
-        /* ★修正：レイアウト崩れ対策のCSSを削除 */
-        /* .product-info-section { ... } は削除 */
-        
         .product-badge.red { background: #B73E3E; }
         .product-badge.gold { background: #e5b323; }
         .product-badge.blue { background: #507ea2; }
+        
         .products-container.list-view { grid-template-columns: 1fr; }
         .products-container.list-view .product-card { flex-direction: row; align-items: center; }
         .products-container.list-view .product-image-wrapper { flex-shrink: 0; width: 200px; height: 200px; }
@@ -90,6 +98,7 @@
         .footer-link { color: #555; text-decoration: none; padding: 0.5rem; transition: color 0.3s ease; }
         .footer-link:hover { color: #8C2B29; }
         .footer-copyright { color: #888; font-size: 0.9rem; }
+        
         @media (max-width: 768px) {
             .header-banner-container { width: 100%; margin: 0; }
             .hero-banners { width: 100%; padding: 0 1rem; }
@@ -122,6 +131,7 @@
     </footer>
     
     <script>
+        // JavaScript部分は前回からほぼ変更ありません（ボタンをdivで囲むだけ）
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3SY5bYoDqBIVV-KklmAxDCYTvxQaYJpK4s12cWT7YqTJOXT5WQMFgM9NLvmQee8xiCw/exec';
 
         const parsePrice = (price) => {
@@ -166,7 +176,9 @@
                             ${badgeHtml}
                             <p class="product-price">${originalPriceHtml}¥${displayPrice.toLocaleString()}</p>
                             ${product.notice ? `<div class="product-notice">${product.notice}</div>` : ''}
-                            <a href="${product.url}" class="cta-button" target="_blank"><span>商品を見る</span></a>
+                            <div class="cta-button-wrapper">
+                                <a href="${product.url}" class="cta-button" target="_blank"><span>商品を見る</span></a>
+                            </div>
                         </div>
                     </div>`;
             },
@@ -187,7 +199,9 @@
                             ${badgeHtml}
                             <p class="product-price">${originalPriceHtml}¥${displayPrice.toLocaleString()}</p>
                             ${product.notice ? `<div class="product-notice">${product.notice}</div>` : ''}
-                            <a href="${product.url}" class="cta-button" target="_blank">商品を見る</a>
+                            <div class="cta-button-wrapper">
+                                <a href="${product.url}" class="cta-button" target="_blank">商品を見る</a>
+                            </div>
                         </div>
                     </div>`;
             },
