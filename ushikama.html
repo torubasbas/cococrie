@@ -5,27 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">セール特集</title>
     <style>
-        /* CSSは前回から変更ありません */
+        /* --- 基本スタイル --- */
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
         body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; background: #fff; color: #333; line-height: 1.6; }
+
+        /* --- ヘッダー --- */
         .header { background: #fff; padding: 0; text-align: center; border-bottom: 1px solid #eee; }
         .header-banner-container { width: 70%; margin: 2rem auto; }
         .header-banner-image { width: 100%; height: auto; display: block; }
+        
+        /* --- ヒーローバナー（ヘッダー下） --- */
         .hero-banners { width: 70%; max-width: 1200px; margin: 2rem auto; padding: 0; display: flex; flex-direction: column; gap: 2rem; }
         .banner-container { width: 100%; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); transition: transform 0.3s ease; }
         .banner-container:hover { transform: translateY(-5px); }
         .banner-image { width: 100%; height: auto; display: block; }
         .banner-link { display: block; text-decoration: none; }
+        
+        /* --- カテゴリナビゲーション --- */
         .category-nav { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; position: sticky; top: 0; z-index: 100; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); }
         .category-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; padding: 1rem; }
         .category-button { background: #f5f5f5; color: #333; padding: 1rem; border-radius: 8px; text-align: center; text-decoration: none; transition: all 0.3s ease; border: 1px solid #ddd; font-weight: bold; text-transform: none; font-size: 0.9rem; }
         .category-button:hover, .category-button.active { border-color: #8C2B29; background: #8C2B29; color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(140, 43, 41, 0.2); }
+        
+        /* --- おすすめセクション --- */
         #featured-section { background-color: #f9f9f9; padding: 4rem 0; margin-top: 4rem; }
         .section-title { font-family: "游明朝", YuMincho, "Hiragino Mincho ProN", "MS PMincho", serif; text-align: center; font-size: 2.2rem; margin: 0 0 2rem; color: #333; background: none; -webkit-background-clip: unset; -webkit-text-fill-color: unset; position: relative; padding-bottom: 1rem; }
         .section-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 2px; background: #8C2B29; }
         .display-type-selector { display: flex; justify-content: center; gap: 1rem; margin: 2rem 0; }
         .display-type-button { padding: 0.5rem 1.5rem; border: 2px solid #8C2B29; border-radius: 20px; background: transparent; color: #8C2B29; cursor: pointer; transition: all 0.3s ease; }
         .display-type-button.active { background: #8C2B29; color: #fff; }
+        
+        /* --- 商品カード & グリッド --- */
         .featured-products { max-width: 50%; margin: 0 auto; }
         .featured-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
         .featured-rank { font-family: "游明朝", YuMincho, "Hiragino Mincho ProN", "MS PMincho", serif; color: #8C2B29; font-weight: bold; line-height: 1; margin-bottom: 1rem; }
@@ -35,6 +45,7 @@
         .featured-product-card { display: flex; flex-direction: column; align-items: center; gap: 1rem; background: #fff; padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid #eee; border-top: 4px solid #8C2B29; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         .featured-image { width: 100%; height: auto; object-fit: cover; border-radius: 8px; }
         .featured-info { flex-grow: 1; display: flex; flex-direction: column; width: 100%; }
+
         .category-section { max-width: 1200px; margin: 4rem auto; padding: 0 1rem; scroll-margin-top: 100px; }
         .category-header { display: flex; justify-content: space-between; align-items: center; margin: 2rem 0 1.5rem; }
         .category-title { font-family: "游明朝", YuMincho, "Hiragino Mincho ProN", "MS PMincho", serif; font-size: 1.8rem; color: #333; border-left: 4px solid #8C2B29; padding-left: 1rem; margin: 0; }
@@ -49,15 +60,16 @@
         .product-image { width: 100%; aspect-ratio: 1; object-fit: cover; }
         .product-info { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
         .product-name { font-size: 1.1rem; margin-bottom: 0.8rem; color: #333; font-weight: bold; flex-grow: 1; }
-        .product-price { font-size: 1.7rem; color: #B73E3E; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5em; font-weight: bold; }
+        .product-price { font-size: 1.7rem; color: #B73E3E; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; /* ★中央揃えを追加 */ gap: 0.5em; font-weight: bold; }
         .original-price { text-decoration: line-through; color: #999; font-size: 1.2rem; }
         .product-notice { background: #f5f5f5; padding: 0.5rem; border-radius: 4px; font-size: 0.9rem; margin: 0.5rem 0; color: #555; }
         .cta-button { display: block; width: 100%; padding: 0.8rem; background: #8C2B29; color: white; text-align: center; text-decoration: none; border-radius: 8px; transition: all 0.3s ease; font-weight: bold; text-transform: none; letter-spacing: 1px; margin-top: auto; }
         .cta-button:hover { background: #6a201e; }
         .product-badge { display: inline-block; padding: 0.3rem 0.8rem; color: #fff; font-weight: bold; font-size: 0.9rem; border-radius: 20px; line-height: 1.4; text-align: center; }
-        .product-info-section { min-height: 4.5em; margin: 0.8rem 0; display: flex; flex-direction: column; justify-content: center; }
-        .product-info-section .product-badge { margin: 0.3rem 0; }
-        .product-info-section .product-price { margin-bottom: 0; }
+        
+        /* ★修正：レイアウト崩れ対策のCSSを削除 */
+        /* .product-info-section { ... } は削除 */
+        
         .product-badge.red { background: #B73E3E; }
         .product-badge.gold { background: #e5b323; }
         .product-badge.blue { background: #507ea2; }
@@ -110,7 +122,6 @@
     </footer>
     
     <script>
-        // ★★★ SCRIPTタグ内を完全に差し替え ★★★
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3SY5bYoDqBIVV-KklmAxDCYTvxQaYJpK4s12cWT7YqTJOXT5WQMFgM9NLvmQee8xiCw/exec';
 
         const parsePrice = (price) => {
@@ -152,13 +163,9 @@
                         </div>
                         <div class="product-info">
                             <h3 class="product-name">${product.name}</h3>
-                            <div class="product-info-section">
-                                ${badgeHtml}
-                                <p class="product-price">${originalPriceHtml}¥${displayPrice.toLocaleString()}</p>
-                            </div>
-                            <div class="product-info-section">
-                                ${product.notice ? `<div class="product-notice">${product.notice}</div>` : ''}
-                            </div>
+                            ${badgeHtml}
+                            <p class="product-price">${originalPriceHtml}¥${displayPrice.toLocaleString()}</p>
+                            ${product.notice ? `<div class="product-notice">${product.notice}</div>` : ''}
                             <a href="${product.url}" class="cta-button" target="_blank"><span>商品を見る</span></a>
                         </div>
                     </div>`;
@@ -177,13 +184,9 @@
                         <img src="${product.imageUrl}" alt="${product.name}" class="featured-image" loading="lazy">
                         <div class="featured-info">
                             <h3 class="product-name">${product.name}</h3>
-                            <div class="product-info-section">
-                                ${badgeHtml}
-                                <p class="product-price">${originalPriceHtml}¥${displayPrice.toLocaleString()}</p>
-                            </div>
-                            <div class="product-info-section">
-                                ${product.notice ? `<div class="product-notice">${product.notice}</div>` : ''}
-                            </div>
+                            ${badgeHtml}
+                            <p class="product-price">${originalPriceHtml}¥${displayPrice.toLocaleString()}</p>
+                            ${product.notice ? `<div class="product-notice">${product.notice}</div>` : ''}
                             <a href="${product.url}" class="cta-button" target="_blank">商品を見る</a>
                         </div>
                     </div>`;
