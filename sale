@@ -133,7 +133,7 @@
         </div>
     </footer>
     <script>
-        const SCRIPT_URL = 'YOUR_GAS_WEB_APP_URL'; // ここにデプロイしたGASのURLを貼り付け
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzeARd4OE5KcSbkPzuvTfqFz0DTD3eFM6AoT2pD1kc_qUeplR75HQ2pbnwveycPAHyzRg/exec'; // ここにデプロイしたGASのURLを貼り付け
 
         class ShopData {
             constructor(data) {
