@@ -9,22 +9,10 @@
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
         body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; background: #fff; color: #333; line-height: 1.6; }
 
-        /* --- ヘッダー（新デザイン） --- */
-        .header {
-            background: #fff;
-            padding: 0; /* paddingをなくし、画像が端まで表示されるようにする */
-            text-align: center;
-            border-bottom: 1px solid #eee;
-        }
-        .header-banner-container {
-            width: 70%; /* ★PC表示の場合は70%の横幅 */
-            margin: 2rem auto; /* 上下に余白、左右中央寄せ */
-        }
-        .header-banner-image {
-            width: 100%;
-            height: auto;
-            display: block; /* 画像下の余白を消す */
-        }
+        /* --- ヘッダー --- */
+        .header { background: #fff; padding: 0; text-align: center; border-bottom: 1px solid #eee; }
+        .header-banner-container { width: 70%; margin: 2rem auto; }
+        .header-banner-image { width: 100%; height: auto; display: block; }
         
         /* --- ヒーローバナー（ヘッダー下） --- */
         .hero-banners { width: 100%; max-width: 1200px; margin: 2rem auto; padding: 0 1rem; display: flex; flex-direction: column; gap: 2rem; }
@@ -72,11 +60,22 @@
         .product-notice { background: #f5f5f5; padding: 0.5rem; border-radius: 4px; font-size: 0.9rem; margin: 0.5rem 0; color: #555; }
         .cta-button { display: block; width: 100%; padding: 0.8rem; background: #8C2B29; color: white; text-align: center; text-decoration: none; border-radius: 8px; transition: all 0.3s ease; font-weight: bold; text-transform: none; letter-spacing: 1px; margin-top: auto; }
         .cta-button:hover { background: #6a201e; }
-        .product-badge { position: absolute; top: 10px; left: -8px; padding: 5px 15px; color: #fff; font-weight: bold; font-size: 0.9rem; z-index: 2; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
-        .product-badge::before { content: ''; position: absolute; top: 100%; left: 0; border-top: 8px solid; border-left: 8px solid transparent; }
-        .product-badge.red { background: #B73E3E; } .product-badge.red::before { border-top-color: #8C2B29; }
-        .product-badge.gold { background: #e5b323; color:#fff; } .product-badge.gold::before { border-top-color: #c8a209; }
-        .product-badge.blue { background: #507ea2; } .product-badge.blue::before { border-top-color: #3b5e7a; }
+
+        /* --- 商品ラベル（バッジ）機能（新デザイン） --- */
+        .product-badge {
+            display: inline-block; /* インラインブロック要素として配置 */
+            padding: 0.3rem 0.8rem;
+            margin: 0.8rem 0; /* 上下の余白 */
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.9rem;
+            border-radius: 20px; /* 角を丸くする */
+            line-height: 1.4;
+        }
+        .product-badge.red { background: #B73E3E; }
+        .product-badge.gold { background: #e5b323; }
+        .product-badge.blue { background: #507ea2; }
+
         .products-container.list-view { grid-template-columns: 1fr; }
         .products-container.list-view .product-card { flex-direction: row; align-items: center; }
         .products-container.list-view .product-image-wrapper { flex-shrink: 0; width: 200px; height: 200px; }
@@ -96,10 +95,7 @@
         .footer-copyright { color: #888; font-size: 0.9rem; }
         
         @media (max-width: 768px) {
-            .header-banner-container {
-                width: 100%; /* スマホ表示の場合は100%の横幅 */
-                margin: 0;   /* 余白をなくす */
-            }
+            .header-banner-container { width: 100%; margin: 0; }
             .featured-products { max-width: 100%; }
             .products-container { grid-template-columns: repeat(2, 1fr); }
             .products-container.list-view { grid-template-columns: 1fr; }
@@ -132,7 +128,7 @@
     </footer>
     
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3SY5bYoDqBIVV-KklmAxDCYTvxQaYJpK4s12cWT7YqTJOXT5WQMFgM9NLvmQee8xiCw/exec'; // ★★★ここに再デプロイしたURLを貼り付け★★★
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3SY5bYoDqBIVV-KklmAxDCYTvxQaYJpK4s12cWT7YqTJOXT5WQMFgM9NLvmQee8xiCw/exec';
 
         const parsePrice = (price) => {
             if (!price) return 0;
@@ -169,11 +165,11 @@
                 return `
                     <div class="product-card ${viewType === 'list' ? 'list-view' : ''} fade-in">
                         <div class="product-image-wrapper">
-                            ${badgeHtml}
                             <img src="${product.imageUrl}" alt="${product.name}" class="product-image" loading="lazy">
                         </div>
                         <div class="product-info">
                             <h3 class="product-name">${product.name}</h3>
+                            ${badgeHtml}
                             <p class="product-price">${originalPriceHtml}¥${displayPrice.toLocaleString()}</p>
                             ${product.notice ? `<div class="product-notice">${product.notice}</div>` : ''}
                             <a href="${product.url}" class="cta-button" target="_blank"><span>商品を見る</span></a>
@@ -185,12 +181,15 @@
                 const originalPrice = parsePrice(product.originalPrice);
                 const originalPriceHtml = originalPrice > 0 && originalPrice > salePrice ? `<span class="original-price">¥${originalPrice.toLocaleString()}</span>` : '';
                 const displayPrice = salePrice > 0 ? salePrice : originalPrice;
+                const badgeHtml = product.labelText ? `<div class="product-badge ${product.labelColor || 'red'}">${product.labelText}</div>` : '';
+
                 return `
                     <div class="featured-product-card fade-in">
                         ${rank ? `<div class="featured-rank">${rank}</div>` : ''}
                         <img src="${product.imageUrl}" alt="${product.name}" class="featured-image" loading="lazy">
                         <div class="featured-info">
                             <h3 class="product-name">${product.name}</h3>
+                            ${badgeHtml}
                             <p class="product-price">${originalPriceHtml}¥${displayPrice.toLocaleString()}</p>
                             ${product.notice ? `<div class="product-notice">${product.notice}</div>` : ''}
                         </div>
