@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">セール特集</title>
     <style>
-        /* CSSは前回から変更ありません */
+        /* --- 基本スタイル --- */
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
         body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; background: #fff; color: #333; line-height: 1.6; }
+
+        /* --- ヘッダー, ヒーローバナー, カテゴリナビ --- */
+        /* (変更なし) */
         .header { background: #fff; padding: 0; text-align: center; border-bottom: 1px solid #eee; }
         .header-banner-container { width: 70%; margin: 2rem auto; }
         .header-banner-image { width: 100%; height: auto; display: block; }
@@ -20,12 +23,16 @@
         .category-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; padding: 1rem; }
         .category-button { background: #f5f5f5; color: #333; padding: 1rem; border-radius: 8px; text-align: center; text-decoration: none; transition: all 0.3s ease; border: 1px solid #ddd; font-weight: bold; text-transform: none; font-size: 0.9rem; }
         .category-button:hover, .category-button.active { border-color: #8C2B29; background: #8C2B29; color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(140, 43, 41, 0.2); }
+        
+        /* --- おすすめセクション --- */
         #featured-section { background-color: #f9f9f9; padding: 4rem 0; margin-top: 4rem; }
         .section-title { font-family: "游明朝", YuMincho, "Hiragino Mincho ProN", "MS PMincho", serif; text-align: center; font-size: 2.2rem; margin: 0 0 2rem; color: #333; background: none; -webkit-background-clip: unset; -webkit-text-fill-color: unset; position: relative; padding-bottom: 1rem; }
         .section-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 2px; background: #8C2B29; }
         .display-type-selector { display: flex; justify-content: center; gap: 1rem; margin: 2rem 0; }
         .display-type-button { padding: 0.5rem 1.5rem; border: 2px solid #8C2B29; border-radius: 20px; background: transparent; color: #8C2B29; cursor: pointer; transition: all 0.3s ease; }
         .display-type-button.active { background: #8C2B29; color: #fff; }
+        
+        /* --- 商品カード & グリッド --- */
         .featured-products { max-width: 50%; margin: 0 auto; }
         .featured-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
         .featured-rank { font-family: "游明朝", YuMincho, "Hiragino Mincho ProN", "MS PMincho", serif; color: #8C2B29; font-weight: bold; line-height: 1; margin-bottom: 1rem; }
@@ -52,6 +59,7 @@
         .product-price { font-size: 1.7rem; color: #B73E3E; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0.5em; font-weight: bold; }
         .original-price { color: #999; font-size: 1.2rem; }
         .price-text { color: #999; font-size: 1rem; font-weight: normal; }
+        .price-unit { font-size: 0.8em; font-weight: normal; } /* ★修正点1：「円」のスタイル */
         .product-notice { background: #f5f5f5; padding: 0.5rem; border-radius: 4px; font-size: 0.9rem; margin: 0.5rem 0; color: #555; }
         .cta-button { display: block; width: 100%; padding: 0.8rem; background: #8C2B29; color: white; text-align: center; text-decoration: none; border-radius: 8px; transition: all 0.3s ease; font-weight: bold; text-transform: none; letter-spacing: 1px; }
         .cta-button-wrapper { margin-top: auto; padding-top: 1rem; }
@@ -77,14 +85,24 @@
         .footer-link { color: #555; text-decoration: none; padding: 0.5rem; transition: color 0.3s ease; }
         .footer-link:hover { color: #8C2B29; }
         .footer-copyright { color: #888; font-size: 0.9rem; }
+        
         @media (max-width: 768px) {
             .header-banner-container { width: 100%; margin: 0; }
             .hero-banners { width: 100%; padding: 0 1rem; }
             .featured-products { max-width: 100%; }
-            .products-container { grid-template-columns: repeat(2, 1fr); }
+            /* ★修正点2：スマホで商品を1列に */
+            .products-container {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
             .products-container.list-view { grid-template-columns: 1fr; }
             .products-container.list-view .product-image-wrapper { width: 120px; height: 120px; }
             .product-price { flex-direction: column; align-items: center; gap: 0rem; }
+            /* ★修正点3：スマホで二重価格全体を中央揃えに */
+            .original-price {
+                text-align: center;
+                display: block; /* ブロック要素にして中央揃えを効かせる */
+            }
             .category-buttons { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
@@ -116,6 +134,76 @@
             return parseInt(String(price).replace(/,/g, ''), 10);
         };
 
+        class ShopData { /* ... 変更なし ... */ }
+
+        // ★★★ UIHelpers を修正 ★★★
+        const UIHelpers = {
+            generateProductCard(product, viewType = 'grid') {
+                const salePrice = parsePrice(product.salePrice);
+                const originalPrice = parsePrice(product.originalPrice);
+                
+                // ★修正点1：「円」をspanで囲む
+                const priceTextHtml = product.priceText ? `<span class="price-text">${product.priceText}</span>` : '';
+                const originalPriceHtml = originalPrice > 0 && originalPrice > salePrice 
+                    ? `<span class="original-price" style="text-decoration: line-through;">通常価格${originalPrice.toLocaleString()}<span class="price-unit">円</span></span>${priceTextHtml}` 
+                    : '';
+
+                const displayPrice = salePrice > 0 ? salePrice : originalPrice;
+                const badgeHtml = product.labelText ? `<div class="product-badge ${product.labelColor || 'red'}">${product.labelText}</div>` : '';
+                const shippingLabelHtml = product.shippingLabel ? `<div class="shipping-label">${product.shippingLabel}</div>` : '';
+
+                return `
+                    <div class="product-card ${viewType === 'list' ? 'list-view' : ''} fade-in">
+                        <div class="product-image-wrapper">
+                            <img src="${product.imageUrl}" alt="${product.name}" class="product-image" loading="lazy">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">${product.name}</h3>
+                            ${badgeHtml}
+                            <p class="product-price">${originalPriceHtml} <span style="font-size: 1.7rem; color: #B73E3E;">${displayPrice.toLocaleString()}<span class="price-unit">円</span></span></p>
+                            ${shippingLabelHtml}
+                            ${product.notice ? `<div class="product-notice">${product.notice}</div>` : ''}
+                            <div class="cta-button-wrapper">
+                                <a href="${product.url}" class="cta-button" target="_blank"><span>商品を見る</span></a>
+                            </div>
+                        </div>
+                    </div>`;
+            },
+            generateFeaturedCard(product, rank = null) {
+                const salePrice = parsePrice(product.salePrice);
+                const originalPrice = parsePrice(product.originalPrice);
+
+                // ★修正点1：「円」をspanで囲む
+                const priceTextHtml = product.priceText ? `<span class="price-text">${product.priceText}</span>` : '';
+                const originalPriceHtml = originalPrice > 0 && originalPrice > salePrice 
+                    ? `<span class="original-price" style="text-decoration: line-through;">通常価格${originalPrice.toLocaleString()}<span class="price-unit">円</span></span>${priceTextHtml}` 
+                    : '';
+                
+                const displayPrice = salePrice > 0 ? salePrice : originalPrice;
+                const badgeHtml = product.labelText ? `<div class="product-badge ${product.labelColor || 'red'}">${product.labelText}</div>` : '';
+                const shippingLabelHtml = product.shippingLabel ? `<div class="shipping-label">${product.shippingLabel}</div>` : '';
+                const rankHtml = rank ? `<div class="featured-rank"><span>第</span><span class="rank-number">${rank}</span><span>位</span></div>` : '';
+
+                return `
+                    <div class="featured-product-card fade-in">
+                        ${rankHtml}
+                        <img src="${product.imageUrl}" alt="${product.name}" class="featured-image" loading="lazy">
+                        <div class="featured-info">
+                            <h3 class="product-name">${product.name}</h3>
+                            ${badgeHtml}
+                            <p class="product-price">${originalPriceHtml} <span style="font-size: 1.7rem; color: #B73E3E;">${displayPrice.toLocaleString()}<span class="price-unit">円</span></span></p>
+                            ${shippingLabelHtml}
+                            ${product.notice ? `<div class="product-notice">${product.notice}</div>` : ''}
+                            <div class="cta-button-wrapper">
+                                <a href="${product.url}" class="cta-button" target="_blank">商品を見る</a>
+                            </div>
+                        </div>
+                    </div>`;
+            },
+            generateCategorySection(categoryId, categoryName) { /* ... 変更なし ... */ }
+        };
+        
+        // ★★★ ShopData, SalePageクラスとその後のコードは、前回の完全なものを使用 ★★★
         class ShopData {
             constructor(data) {
                 this.features = data.features || {};
@@ -134,83 +222,6 @@
             }
             getCategoryName(categoryId) { return this.categoryMetas[categoryId]?.name || categoryId; }
         }
-
-        // ★★★ UIHelpers を修正 ★★★
-        const UIHelpers = {
-            generateProductCard(product, viewType = 'grid') {
-                const salePrice = parsePrice(product.salePrice);
-                const originalPrice = parsePrice(product.originalPrice);
-                
-                const priceTextHtml = product.priceText ? `<span class="price-text">${product.priceText}</span>` : '';
-                const originalPriceHtml = originalPrice > 0 && originalPrice > salePrice 
-                    ? `<span class="original-price" style="text-decoration: line-through;">通常価格${originalPrice.toLocaleString()}円</span>${priceTextHtml}` 
-                    : '';
-
-                const displayPrice = salePrice > 0 ? salePrice : originalPrice;
-                const badgeHtml = product.labelText ? `<div class="product-badge ${product.labelColor || 'red'}">${product.labelText}</div>` : '';
-                const shippingLabelHtml = product.shippingLabel ? `<div class="shipping-label">${product.shippingLabel}</div>` : '';
-
-                return `
-                    <div class="product-card ${viewType === 'list' ? 'list-view' : ''} fade-in">
-                        <div class="product-image-wrapper">
-                            <img src="${product.imageUrl}" alt="${product.name}" class="product-image" loading="lazy">
-                        </div>
-                        <div class="product-info">
-                            <h3 class="product-name">${product.name}</h3>
-                            ${badgeHtml}
-                            <p class="product-price">${originalPriceHtml} <span style="font-size: 1.7rem; color: #B73E3E;">${displayPrice.toLocaleString()}円</span></p>
-                            ${shippingLabelHtml}
-                            ${product.notice ? `<div class="product-notice">${product.notice}</div>` : ''}
-                            <div class="cta-button-wrapper">
-                                <a href="${product.url}" class="cta-button" target="_blank"><span>商品を見る</span></a>
-                            </div>
-                        </div>
-                    </div>`;
-            },
-            generateFeaturedCard(product, rank = null) {
-                const salePrice = parsePrice(product.salePrice);
-                const originalPrice = parsePrice(product.originalPrice);
-
-                const priceTextHtml = product.priceText ? `<span class="price-text">${product.priceText}</span>` : '';
-                const originalPriceHtml = originalPrice > 0 && originalPrice > salePrice 
-                    ? `<span class="original-price" style="text-decoration: line-through;">通常価格${originalPrice.toLocaleString()}円</span>${priceTextHtml}` 
-                    : '';
-                
-                const displayPrice = salePrice > 0 ? salePrice : originalPrice;
-                const badgeHtml = product.labelText ? `<div class="product-badge ${product.labelColor || 'red'}">${product.labelText}</div>` : '';
-                const shippingLabelHtml = product.shippingLabel ? `<div class="shipping-label">${product.shippingLabel}</div>` : '';
-                const rankHtml = rank ? `<div class="featured-rank"><span>第</span><span class="rank-number">${rank}</span><span>位</span></div>` : '';
-
-                return `
-                    <div class="featured-product-card fade-in">
-                        ${rankHtml}
-                        <img src="${product.imageUrl}" alt="${product.name}" class="featured-image" loading="lazy">
-                        <div class="featured-info">
-                            <h3 class="product-name">${product.name}</h3>
-                            ${badgeHtml}
-                            <p class="product-price">${originalPriceHtml} <span style="font-size: 1.7rem; color: #B73E3E;">${displayPrice.toLocaleString()}円</span></p>
-                            ${shippingLabelHtml}
-                            ${product.notice ? `<div class="product-notice">${product.notice}</div>` : ''}
-                            <div class="cta-button-wrapper">
-                                <a href="${product.url}" class="cta-button" target="_blank">商品を見る</a>
-                            </div>
-                        </div>
-                    </div>`;
-            },
-            generateCategorySection(categoryId, categoryName) {
-                return `
-                    <section id="${categoryId}" class="category-section">
-                        <div class="category-header">
-                            <h2 class="category-title">${categoryName}</h2>
-                            <div class="view-switcher">
-                                <button class="view-switch-button grid-view active" data-view="grid" aria-label="グリッド表示"><svg viewBox="0 0 24 24"><path d="M3,3V11H11V3M9,9H5V5H9M3,13V21H11V13M9,19H5V15H9M13,3V11H21V3M19,9H15V5H19M13,13V21H21V13M19,19H15V15H19Z" /></svg></button>
-                                <button class="view-switch-button list-view" data-view="list" aria-label="リスト表示"><svg viewBox="0 0 24 24"><path d="M3,4H21V6H3V4M3,11H21V13H3V11M3,18H21V20H3V18Z" /></svg></button>
-                            </div>
-                        </div>
-                        <div class="products-container grid-view"></div>
-                    </section>`;
-            }
-        };
 
         class SalePage {
             constructor() { this.shopData = null; this.currentDisplayType = 'featured'; }
