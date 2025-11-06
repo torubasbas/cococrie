@@ -122,7 +122,7 @@
             if (!price) return 0;
             return parseInt(String(price).replace(/,/g, ''), 10);
         };
-        
+
         class ShopData {
             constructor(data) {
                 this.features = data.features || {};
@@ -199,6 +199,7 @@
                         </div>
                     </div>`;
             },
+            // ★修正：動的に生成されるセクションにも content-section クラスを付与
             generateCategorySection(categoryId, categoryName) {
                 return `
                     <section id="${categoryId}" class="category-section content-section">
@@ -230,14 +231,15 @@
                     document.body.innerHTML = `<p style="color:red; padding: 2rem;">データの読み込みに失敗しました。設定を確認してください。<br>${error.message}</p>`;
                 } finally { this.showLoading(false); }
             }
+            // ★修正：renderメソッドの実行順序を変更
             render() {
-                this.applyFeatureSwitches();
                 this.updatePageSettings();
                 this.updateBanners();
-                this.updateCategories();
+                this.updateCategories(); // これでカテゴリセクションが先に作られる
                 this.updateFeaturedProducts();
                 this.shopData.categories.forEach(id => this.updateCategoryProducts(id));
                 this.updateFooter();
+                this.applyFeatureSwitches(); // 背景設定などを最後に実行
                 this.initEventListeners();
             }
             applyFeatureSwitches() {
