@@ -5,14 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">セール特集</title>
     <style>
-        /* CSSは前回から変更ありません */
+        /* CSSを背景機能追加前の状態に戻し、送料ラベルのデザインを修正 */
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-        body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; background-color: #fff; color: #333; line-height: 1.6; background-size: cover; background-attachment: fixed; background-position: center; }
-        .content-section { background-color: #fff; }
-        #featured-section.content-section { background-color: #f9f9f9; }
-        .footer.content-section { background-color: #f5f5f5; }
-        .product-card, .featured-product-card { background-color: #fff; }
-        .header { padding: 0; text-align: center; border-bottom: 1px solid #eee; }
+        body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; background: #fff; color: #333; line-height: 1.6; }
+        .header { background: #fff; padding: 0; text-align: center; border-bottom: 1px solid #eee; }
         .header-banner-container { width: 70%; margin: 2rem auto; }
         .header-banner-image { width: 100%; height: auto; display: block; }
         .hero-banners { width: 70%; max-width: 1200px; margin: 2rem auto; padding: 0; display: flex; flex-direction: column; gap: 2rem; }
@@ -20,11 +16,11 @@
         .banner-container:hover { transform: translateY(-5px); }
         .banner-image { width: 100%; height: auto; display: block; }
         .banner-link { display: block; text-decoration: none; }
-        .category-nav { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); }
+        .category-nav { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; position: sticky; top: 0; z-index: 100; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); }
         .category-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; padding: 1rem; }
         .category-button { background: #f5f5f5; color: #333; padding: 1rem; border-radius: 8px; text-align: center; text-decoration: none; transition: all 0.3s ease; border: 1px solid #ddd; font-weight: bold; text-transform: none; font-size: 0.9rem; }
         .category-button:hover, .category-button.active { border-color: #8C2B29; background: #8C2B29; color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(140, 43, 41, 0.2); }
-        #featured-section { padding: 4rem 0; margin-top: 4rem; }
+        #featured-section { background-color: #f9f9f9; padding: 4rem 0; margin-top: 4rem; }
         .section-title { font-family: "游明朝", YuMincho, "Hiragino Mincho ProN", "MS PMincho", serif; text-align: center; font-size: 2.2rem; margin: 0 0 2rem; color: #333; background: none; -webkit-background-clip: unset; -webkit-text-fill-color: unset; position: relative; padding-bottom: 1rem; }
         .section-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 2px; background: #8C2B29; }
         .display-type-selector { display: flex; justify-content: center; gap: 1rem; margin: 2rem 0; }
@@ -36,10 +32,10 @@
         .featured-rank span:first-child { font-size: 1.5rem; margin-right: 0.1em; }
         .featured-rank span.rank-number { font-size: 3rem; font-family: 'Times New Roman', Times, serif; margin-right: 0.1em; }
         .featured-rank span:last-child { font-size: 1.5rem; }
-        .featured-product-card { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid #eee; border-top: 4px solid #8C2B29; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .featured-product-card { display: flex; flex-direction: column; align-items: center; gap: 1rem; background: #fff; padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid #eee; border-top: 4px solid #8C2B29; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         .featured-image { width: 100%; height: auto; object-fit: cover; border-radius: 8px; }
         .featured-info { flex-grow: 1; display: flex; flex-direction: column; width: 100%; }
-        .category-section { max-width: 1200px; margin: 4rem auto; padding: 2rem; scroll-margin-top: 100px; border-radius: 12px; }
+        .category-section { max-width: 1200px; margin: 4rem auto; padding: 2rem; scroll-margin-top: 100px; border-radius: 12px; background: #fff; }
         .category-header { display: flex; justify-content: space-between; align-items: center; margin: 2rem 0 1.5rem; }
         .category-title { font-family: "游明朝", YuMincho, "Hiragino Mincho ProN", "MS PMincho", serif; font-size: 1.8rem; color: #333; border-left: 4px solid #8C2B29; padding-left: 1rem; margin: 0; }
         .view-switcher { display: flex; gap: 0.5rem; }
@@ -47,7 +43,7 @@
         .view-switch-button:hover, .view-switch-button.active { background: #8C2B29; border-color: #8C2B29; color: #fff; }
         .view-switch-button svg { width: 20px; height: 20px; fill: currentColor; }
         .products-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 3rem; }
-        .product-card { border-radius: 8px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .product-card { background: #fff; border-radius: 8px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; transition: transform 0.3s ease, box-shadow 0.3s ease; }
         .product-card:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); }
         .product-image-wrapper { position: relative; }
         .product-image { width: 100%; aspect-ratio: 1; object-fit: cover; }
@@ -64,7 +60,7 @@
         .product-badge.red { background: #B73E3E; }
         .product-badge.gold { background: #e5b323; }
         .product-badge.blue { background: #507ea2; }
-        .shipping-label { background: #8C2B29; color: #fff; font-size: 0.8rem; font-weight: bold; padding: 0.3rem 0.8rem; border-radius: 20px; margin-top: 0.5rem; display: inline-block; }
+        .shipping-label { border: 1px solid #8C2B29; color: #8C2B29; font-size: 0.8rem; font-weight: bold; padding: 0.2rem 0.6rem; border-radius: 4px; margin-top: 0.5rem; display: inline-block; }
         .products-container.list-view { grid-template-columns: 1fr; }
         .products-container.list-view .product-card { flex-direction: row; align-items: center; }
         .products-container.list-view .product-image-wrapper { flex-shrink: 0; width: 200px; height: 200px; }
@@ -75,7 +71,7 @@
         .loading-indicator { position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.8); z-index: 9999; }
         .spinner { border: 8px solid #eee; border-top: 8px solid #8C2B29; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .footer { border-top:1px solid #eee; padding: 3rem 1rem; margin-top: 4rem; }
+        .footer { background: #f5f5f5; border-top:1px solid #eee; padding: 3rem 1rem; margin-top: 4rem; }
         .footer-container { max-width: 1200px; margin: 0 auto; text-align: center; }
         .footer-shop-name { font-family: "游明朝", YuMincho, "Hiragino Mincho ProN", "MS PMincho", serif; font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem; color: #333; }
         .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-bottom: 2rem; }
@@ -98,16 +94,16 @@
 <body>
     <div id="loading" class="loading-indicator" style="display: none;"><div class="spinner"></div></div>
     
-    <header id="header" class="header content-section"></header>
-    <div class="hero-banners content-section" id="banner-container"></div>
-    <nav id="category-nav" class="category-nav content-section"></nav>
-    <section id="featured-section" class="content-section">
+    <header id="header" class="header"></header>
+    <div class="hero-banners" id="banner-container"></div>
+    <nav id="category-nav" class="category-nav"></nav>
+    <section id="featured-section">
         <h2 class="section-title">おすすめ商品</h2>
         <div class="display-type-selector"><button class="display-type-button active" data-type="featured">目玉商品</button><button class="display-type-button" data-type="ranking">ランキング</button></div>
         <div class="featured-products"><div id="featured-container" class="featured-grid"></div></div>
     </section>
     <div id="category-sections"></div>
-    <footer class="footer content-section">
+    <footer class="footer">
         <div class="footer-container">
             <div id="footer-shop-name" class="footer-shop-name"></div>
             <div id="footer-links" class="footer-links"></div>
@@ -116,7 +112,7 @@
     </footer>
     
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwzt6EQKLYc-tu-vjFd3ZtckJygdjlCQrSu-TPkIVSADdt-f3QkAn7z7YiKDSGt4GQzpQ/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxuAwX0y3kTlsbhE35JVGNcjKWlfpGWq1uez984oa0cAOoLAfisHKd_ilUxINcPCpxETg/exec';
 
         const parsePrice = (price) => {
             if (!price) return 0;
@@ -199,10 +195,9 @@
                         </div>
                     </div>`;
             },
-            // ★修正：動的に生成されるセクションにも content-section クラスを付与
             generateCategorySection(categoryId, categoryName) {
                 return `
-                    <section id="${categoryId}" class="category-section content-section">
+                    <section id="${categoryId}" class="category-section">
                         <div class="category-header">
                             <h2 class="category-title">${categoryName}</h2>
                             <div class="view-switcher">
@@ -231,47 +226,20 @@
                     document.body.innerHTML = `<p style="color:red; padding: 2rem;">データの読み込みに失敗しました。設定を確認してください。<br>${error.message}</p>`;
                 } finally { this.showLoading(false); }
             }
-            // ★修正：renderメソッドの実行順序を変更
             render() {
+                this.applyFeatureSwitches();
                 this.updatePageSettings();
                 this.updateBanners();
-                this.updateCategories(); // これでカテゴリセクションが先に作られる
+                this.updateCategories();
                 this.updateFeaturedProducts();
                 this.shopData.categories.forEach(id => this.updateCategoryProducts(id));
                 this.updateFooter();
-                this.applyFeatureSwitches(); // 背景設定などを最後に実行
                 this.initEventListeners();
             }
             applyFeatureSwitches() {
                 const features = this.shopData.features;
                 if (features.recommend === false) document.getElementById('featured-section').style.display = 'none';
                 if (features.ranking === false) document.querySelector('.display-type-button[data-type="ranking"]').style.display = 'none';
-                
-                const body = document.body;
-                const bgType = features.bgType || 'なし';
-
-                if (bgType === '画像') {
-                    const isSp = window.innerWidth <= 768;
-                    let bgImageUrl = isSp ? features.bgImageUrlSp : features.bgImageUrlPc;
-                    if (bgImageUrl) {
-                        body.style.backgroundImage = `url(${bgImageUrl})`;
-                    }
-                } else if (bgType === '単色') {
-                    body.style.backgroundColor = features.bgColor || '#FFFFFF';
-                }
-                
-                if (bgType !== 'なし') {
-                    const opacity = parseFloat(features.contentBgOpacity);
-                    if (!isNaN(opacity)) {
-                        document.querySelectorAll('.content-section').forEach(el => {
-                            const originalColor = window.getComputedStyle(el).backgroundColor;
-                            const rgb = originalColor.match(/\d+/g);
-                            if (rgb && rgb.length >= 3) {
-                                el.style.backgroundColor = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${opacity})`;
-                            }
-                        });
-                    }
-                }
             }
             updatePageSettings() {
                 const settings = this.shopData.settings;
