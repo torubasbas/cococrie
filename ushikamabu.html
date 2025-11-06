@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">セール特集</title>
     <style>
-        /* CSSを背景機能追加前の状態に戻し、送料ラベルのデザインを修正 */
+        /* --- 基本スタイル --- */
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
         body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; background: #fff; color: #333; line-height: 1.6; }
+
+        /* --- ヘッダー, ヒーローバナー, カテゴリナビ --- */
         .header { background: #fff; padding: 0; text-align: center; border-bottom: 1px solid #eee; }
         .header-banner-container { width: 70%; margin: 2rem auto; }
         .header-banner-image { width: 100%; height: auto; display: block; }
@@ -20,12 +22,16 @@
         .category-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; padding: 1rem; }
         .category-button { background: #f5f5f5; color: #333; padding: 1rem; border-radius: 8px; text-align: center; text-decoration: none; transition: all 0.3s ease; border: 1px solid #ddd; font-weight: bold; text-transform: none; font-size: 0.9rem; }
         .category-button:hover, .category-button.active { border-color: #8C2B29; background: #8C2B29; color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(140, 43, 41, 0.2); }
+        
+        /* --- おすすめセクション --- */
         #featured-section { background-color: #f9f9f9; padding: 4rem 0; margin-top: 4rem; }
         .section-title { font-family: "游明朝", YuMincho, "Hiragino Mincho ProN", "MS PMincho", serif; text-align: center; font-size: 2.2rem; margin: 0 0 2rem; color: #333; background: none; -webkit-background-clip: unset; -webkit-text-fill-color: unset; position: relative; padding-bottom: 1rem; }
         .section-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 2px; background: #8C2B29; }
         .display-type-selector { display: flex; justify-content: center; gap: 1rem; margin: 2rem 0; }
         .display-type-button { padding: 0.5rem 1.5rem; border: 2px solid #8C2B29; border-radius: 20px; background: transparent; color: #8C2B29; cursor: pointer; transition: all 0.3s ease; }
         .display-type-button.active { background: #8C2B29; color: #fff; }
+        
+        /* --- 商品カード & グリッド --- */
         .featured-products { max-width: 50%; margin: 0 auto; }
         .featured-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
         .featured-rank { font-family: "游明朝", YuMincho, "Hiragino Mincho ProN", "MS PMincho", serif; color: #8C2B29; font-weight: bold; line-height: 1; margin-bottom: 1rem; }
@@ -35,7 +41,7 @@
         .featured-product-card { display: flex; flex-direction: column; align-items: center; gap: 1rem; background: #fff; padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid #eee; border-top: 4px solid #8C2B29; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         .featured-image { width: 100%; height: auto; object-fit: cover; border-radius: 8px; }
         .featured-info { flex-grow: 1; display: flex; flex-direction: column; width: 100%; }
-        .category-section { max-width: 1200px; margin: 4rem auto; padding: 2rem; scroll-margin-top: 100px; border-radius: 12px; background: #fff; }
+        .category-section { max-width: 1200px; margin: 4rem auto; padding: 0 1rem; scroll-margin-top: 100px; }
         .category-header { display: flex; justify-content: space-between; align-items: center; margin: 2rem 0 1.5rem; }
         .category-title { font-family: "游明朝", YuMincho, "Hiragino Mincho ProN", "MS PMincho", serif; font-size: 1.8rem; color: #333; border-left: 4px solid #8C2B29; padding-left: 1rem; margin: 0; }
         .view-switcher { display: flex; gap: 0.5rem; }
@@ -49,7 +55,16 @@
         .product-image { width: 100%; aspect-ratio: 1; object-fit: cover; }
         .product-info { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
         .product-name { font-size: 1.1rem; margin-bottom: 0.8rem; color: #333; font-weight: bold; }
-        .product-price { font-size: 1.7rem; color: #B73E3E; margin-bottom: 0.5rem; display: flex; align-items: baseline; justify-content: center; flex-wrap: wrap; gap: 0.5em; font-weight: bold; }
+        /* ★修正：align-items を baseline に変更 */
+        .product-price {
+            font-size: 1.7rem; color: #B73E3E; margin-bottom: 0.5rem;
+            display: flex;
+            align-items: baseline; /* テキストのベースラインで揃える */
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5em;
+            font-weight: bold;
+        }
         .original-price { color: #999; font-size: 1.2rem; }
         .price-text { color: #999; font-size: 1rem; font-weight: normal; }
         .price-unit { font-size: 0.8em; font-weight: normal; }
@@ -78,6 +93,7 @@
         .footer-link { color: #555; text-decoration: none; padding: 0.5rem; transition: color 0.3s ease; }
         .footer-link:hover { color: #8C2B29; }
         .footer-copyright { color: #888; font-size: 0.9rem; }
+        
         @media (max-width: 768px) {
             .header-banner-container { width: 100%; margin: 0; }
             .hero-banners { width: 100%; padding: 0 1rem; }
@@ -96,9 +112,8 @@
     
     <header id="header" class="header"></header>
     <div class="hero-banners" id="banner-container"></div>
-    <nav id="category-nav" class="category-nav"></nav>
-    <section id="featured-section">
-        <h2 class="section-title">おすすめ商品</h2>
+    <nav id="category-nav" class="category-nav"><div id="category-buttons" class="category-buttons"></div></nav>
+    <section id="featured-section"><h2 class="section-title">おすすめ商品</h2>
         <div class="display-type-selector"><button class="display-type-button active" data-type="featured">目玉商品</button><button class="display-type-button" data-type="ranking">ランキング</button></div>
         <div class="featured-products"><div id="featured-container" class="featured-grid"></div></div>
     </section>
@@ -112,6 +127,7 @@
     </footer>
     
     <script>
+        // JavaScript部分は前回から変更ありません
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzq2zd3lLVbk2zUqAIoB808zUwuIJVQK38Pts5VcMNUmnDc-QvH_N_N0aFCc-nmqoEXTA/exec';
 
         const parsePrice = (price) => {
@@ -237,9 +253,8 @@
                 this.initEventListeners();
             }
             applyFeatureSwitches() {
-                const features = this.shopData.features;
-                if (features.recommend === false) document.getElementById('featured-section').style.display = 'none';
-                if (features.ranking === false) document.querySelector('.display-type-button[data-type="ranking"]').style.display = 'none';
+                if (this.shopData.features.recommend === false) document.getElementById('featured-section').style.display = 'none';
+                if (this.shopData.features.ranking === false) document.querySelector('.display-type-button[data-type="ranking"]').style.display = 'none';
             }
             updatePageSettings() {
                 const settings = this.shopData.settings;
