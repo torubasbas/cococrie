@@ -49,8 +49,10 @@
         .product-image { width: 100%; aspect-ratio: 1; object-fit: cover; }
         .product-info { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
         .product-name { font-size: 1.1rem; margin-bottom: 0.8rem; color: #333; font-weight: bold; }
-        .product-price { font-size: 1.7rem; color: #B73E3E; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5em; font-weight: bold; }
-        .original-price { text-decoration: line-through; color: #999; font-size: 1.2rem; }
+        .product-price { font-size: 1.7rem; color: #B73E3E; margin-bottom: 0.5rem; display: flex; align-items: baseline; justify-content: center; flex-wrap: wrap; gap: 0.5em; font-weight: bold; }
+        .original-price { color: #999; font-size: 1.2rem; }
+        .price-text { color: #999; font-size: 1rem; font-weight: normal; }
+        .price-unit { font-size: 0.8em; font-weight: normal; }
         .product-notice { background: #f5f5f5; padding: 0.5rem; border-radius: 4px; font-size: 0.9rem; margin: 0.5rem 0; color: #555; }
         .cta-button { display: block; width: 100%; padding: 0.8rem; background: #8C2B29; color: white; text-align: center; text-decoration: none; border-radius: 8px; transition: all 0.3s ease; font-weight: bold; text-transform: none; letter-spacing: 1px; }
         .cta-button-wrapper { margin-top: auto; padding-top: 1rem; }
@@ -58,6 +60,7 @@
         .product-badge.red { background: #B73E3E; }
         .product-badge.gold { background: #e5b323; }
         .product-badge.blue { background: #507ea2; }
+        .shipping-label { border: 1px solid #8C2B29; color: #8C2B29; font-size: 0.8rem; font-weight: bold; padding: 0.2rem 0.6rem; border-radius: 4px; margin-top: 0.5rem; display: inline-block; }
         .products-container.list-view { grid-template-columns: 1fr; }
         .products-container.list-view .product-card { flex-direction: row; align-items: center; }
         .products-container.list-view .product-image-wrapper { flex-shrink: 0; width: 200px; height: 200px; }
@@ -79,13 +82,15 @@
             .header-banner-container { width: 100%; margin: 0; }
             .hero-banners { width: 100%; padding: 0 1rem; }
             .featured-products { max-width: 100%; }
-            .products-container { grid-template-columns: repeat(2, 1fr); }
+            .products-container { grid-template-columns: 1fr; padding: 0 1rem; }
             .products-container.list-view { grid-template-columns: 1fr; }
             .products-container.list-view .product-image-wrapper { width: 120px; height: 120px; }
             .product-price { flex-direction: column; align-items: center; gap: 0rem; }
+            .original-price { text-align: center; display: block; }
             .category-buttons { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
+    <!-- 楽天計測タグなどは省略 -->
 </head>
 <body>
     <div id="loading" class="loading-indicator" style="display: none;"><div class="spinner"></div></div>
@@ -107,7 +112,7 @@
     </footer>
     
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3SY5bYoDqBIVV-KklmAxDCYTvxQaYJpK4s12cWT7YqTJOXT5WQMFgM9NLvmQee8xiCw/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxt5rqgA-Ox7ozwTd5olhBzTufI_2vvWw8grxa7-sZsd75kgC9kLPVQ9XqtIsE7ZNJjNA/exec';
 
         const parsePrice = (price) => {
             if (!price) return 0;
@@ -133,14 +138,23 @@
             getCategoryName(categoryId) { return this.categoryMetas[categoryId]?.name || categoryId; }
         }
 
+        // ★★★ UIHelpers を修正 ★★★
         const UIHelpers = {
             generateProductCard(product, viewType = 'grid') {
                 const salePrice = parsePrice(product.salePrice);
                 const originalPrice = parsePrice(product.originalPrice);
-                const originalPriceHtml = originalPrice > 0 && originalPrice > salePrice ? `<span class="original-price">¥${originalPrice.toLocaleString()}</span>` : '';
+                
+                // ★修正箇所：originalPriceLabel を使うように変更
+                const originalPriceLabel = product.originalPriceLabel || '通常価格'; // デフォルト値を設定
+                const priceTextHtml = product.priceText ? `<span class="price-text">${product.priceText}</span>` : '';
+                const originalPriceHtml = originalPrice > 0 && originalPrice > salePrice 
+                    ? `<span class="original-price" style="text-decoration: line-through;">${originalPriceLabel}${originalPrice.toLocaleString()}<span class="price-unit">円</span></span>` 
+                    : '';
+
                 const displayPrice = salePrice > 0 ? salePrice : originalPrice;
                 const badgeHtml = product.labelText ? `<div class="product-badge ${product.labelColor || 'red'}">${product.labelText}</div>` : '';
-                
+                const shippingLabelHtml = product.shippingLabel ? `<div class="shipping-label">${product.shippingLabel}</div>` : '';
+
                 return `
                     <div class="product-card ${viewType === 'list' ? 'list-view' : ''} fade-in">
                         <div class="product-image-wrapper">
@@ -149,7 +163,8 @@
                         <div class="product-info">
                             <h3 class="product-name">${product.name}</h3>
                             ${badgeHtml}
-                            <p class="product-price">${originalPriceHtml}¥${displayPrice.toLocaleString()}</p>
+                            <p class="product-price">${originalPriceHtml} ${priceTextHtml} <span style="font-size: 1.7rem; color: #B73E3E;">${displayPrice.toLocaleString()}<span class="price-unit">円</span></span></p>
+                            ${shippingLabelHtml}
                             ${product.notice ? `<div class="product-notice">${product.notice}</div>` : ''}
                             <div class="cta-button-wrapper">
                                 <a href="${product.url}" class="cta-button" target="_blank"><span>商品を見る</span></a>
@@ -160,9 +175,17 @@
             generateFeaturedCard(product, rank = null) {
                 const salePrice = parsePrice(product.salePrice);
                 const originalPrice = parsePrice(product.originalPrice);
-                const originalPriceHtml = originalPrice > 0 && originalPrice > salePrice ? `<span class="original-price">¥${originalPrice.toLocaleString()}</span>` : '';
+
+                // ★修正箇所：originalPriceLabel を使うように変更
+                const originalPriceLabel = product.originalPriceLabel || '通常価格'; // デフォルト値を設定
+                const priceTextHtml = product.priceText ? `<span class="price-text">${product.priceText}</span>` : '';
+                const originalPriceHtml = originalPrice > 0 && originalPrice > salePrice 
+                    ? `<span class="original-price" style="text-decoration: line-through;">${originalPriceLabel}${originalPrice.toLocaleString()}<span class="price-unit">円</span></span>` 
+                    : '';
+                
                 const displayPrice = salePrice > 0 ? salePrice : originalPrice;
                 const badgeHtml = product.labelText ? `<div class="product-badge ${product.labelColor || 'red'}">${product.labelText}</div>` : '';
+                const shippingLabelHtml = product.shippingLabel ? `<div class="shipping-label">${product.shippingLabel}</div>` : '';
                 const rankHtml = rank ? `<div class="featured-rank"><span>第</span><span class="rank-number">${rank}</span><span>位</span></div>` : '';
 
                 return `
@@ -172,7 +195,8 @@
                         <div class="featured-info">
                             <h3 class="product-name">${product.name}</h3>
                             ${badgeHtml}
-                            <p class="product-price">${originalPriceHtml}¥${displayPrice.toLocaleString()}</p>
+                            <p class="product-price">${originalPriceHtml} ${priceTextHtml} <span style="font-size: 1.7rem; color: #B73E3E;">${displayPrice.toLocaleString()}<span class="price-unit">円</span></span></p>
+                            ${shippingLabelHtml}
                             ${product.notice ? `<div class="product-notice">${product.notice}</div>` : ''}
                             <div class="cta-button-wrapper">
                                 <a href="${product.url}" class="cta-button" target="_blank">商品を見る</a>
@@ -333,5 +357,5 @@
             salePage.initialize(SCRIPT_URL);
         });
     </script>
-</body>
+<script type="text/javascript" src="https://r.r10s.jp/com/js/d/pa/pa3.min.js" async defer></script></body>
 </html>
